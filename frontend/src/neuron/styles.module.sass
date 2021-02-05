@@ -1,0 +1,63 @@
+$primary: #0BA2F6
+	
+.container
+	display: block
+	
+.neuron
+	fill: white
+	stroke-width: 4
+	stroke: #424242
+
+	&.active
+		stroke: $primary
+
+	&.activated
+		stroke: #f0b521
+
+		.text
+			fill:  #f0b521
+
+.text, .weight
+	font-size: 19px
+	font-weight: 500
+	dominant-baseline: middle 
+	text-anchor: middle
+	pointer-events: none
+	fill: #818181
+	transform: translateY(2px)
+	user-select: none
+
+.weight
+	font-size: 10px
+	transform: translate(12px, -12px)
+	fill: #cecece
+
+
+.edge
+	stroke: #818181
+	stroke-width: 5
+
+	&.active
+		stroke: $primary
+
+.negative
+	stroke: #818181
+	stroke-width: 2
+	fill: white
+
+.label
+	pointer-events: none
+	user-select: none
+	dominant-baseline: middle 
+	text-anchor: middle
+	font-weight: 500
+	fill: #686868
+	font-size: 14px
+
+	&.ending
+		text-anchor: start
+		transform: translateX(40px)
+
+	&.starting
+		text-anchor: end
+		transform: translateX(-40px)

@@ -1,0 +1,71 @@
+$gray: #A5A5A5
+$light: #DDDDDD
+$gray-bkg: #F1F1F1
+	
+.fixed
+	position: fixed
+
+.black
+	position: absolute
+	top: 0
+	left: 0
+	right: 0
+	min-height: 100vh
+	background-color: rgba(0, 0, 0, 0.8)
+	z-index: 10
+	display: flex
+	align-items: center
+	justify-content: center
+	animation: openBlack 0.15s
+
+.modal
+	background-color: white
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1)
+	animation: open 0.2s
+	margin: 20px
+	min-width: 600px
+	border-radius: 15px
+	overflow: hidden
+
+	.header
+		background-color: $gray-bkg
+		overflow: hidden
+		position: relative
+
+		h3
+			font-size: 1.1em
+			margin: 0.6em
+			text-align: center
+
+		.closeButton
+			position: absolute
+			right: 0.15em
+			top: 0
+			height: 100%
+			font-size: 1.7em
+			color: darken($gray, 5%)
+			padding: 0
+			background: none
+			border: none
+			svg
+				margin-top: 0.3em
+
+			&:hover
+				color: darken($gray, 20%)
+
+	.content
+		padding: 20px 30px
+		display: flex
+		flex-direction: column
+
+@keyframes openBlack
+	from
+		opacity: 0
+	to
+		opacity: 1
+
+@keyframes open
+	from 
+		transform: scale(0.8)
+	to
+		transition: scale(1)
