@@ -38,10 +38,21 @@ $primary: #0BA2F6
 		&:last-child
 			border-radius: 0 12px 12px 0
 	
-.button
+.button, .playButton
 	padding: 9px 15px
 	font-size: 0.95em
 	font-weight: 600
 	border: none
 	background-color: $primary
 	color: white
+
+.playButton
+	width: 50px
+	height: 50px
+	border-radius: 10px
+	margin-left: 30px
+	svg
+		font-size: 22px
+
+	&:hover
+		background-color: lighten($primary, 5%)

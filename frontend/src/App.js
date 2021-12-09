@@ -13,15 +13,18 @@ import {
 	setType
 } from 'neuron/tools'
 import { addDraftEdge, moveDraftEdge, removeDraftEdge, confirmDraftEdge } from 'neuron/draft-tools'
+import computeStep from 'neuron/compute-step'
 import { mouseMove, useKeyDown } from 'neuron/libs'
 import { stateToJson, jsonToState } from 'neuron/export'
 import { add } from 'mathjs'
 
 import CornerMenu from 'components/corner-menu'
 import SegmentButton from 'components/controls/segment-button'
+import PlayButton from 'components/controls/play-button'
 
 import { useModalList } from 'components/modal-window/modal-list'
 
+import { Map } from 'immutable'
 
 const segmentItems = {
 	step: "Ступечатая",
@@ -33,8 +36,10 @@ let lastClick = 0
 function App() {
 
 	const [ state, setState ] = useState(() => createNeuronState())
+	const [ values, setValues ] = useState(() => new Map())
+	const [ visibleValues, setVisibleValues ] = useState(() => new Map())
 	const [ currentWeb, setCurrentWeb ] = useState(null)
-
+	
 	
 	useKeyDown({
 		'Delete': () => setState(state => deleteSelectedNeuron(state)),
@@ -124,15 +129,22 @@ function App() {
 
 	const changeType = key => setState(state => setType(state, key))
 
+	const play = () => {
+		const { values: _values, visibleValues } = computeStep(state.get('neurons'), state.get('edges'), values)
+		setValues(_values)
+		setVisibleValues(visibleValues)
+	}
+
 	return (
 		<>
 			<header className="header">
 				<CornerMenu buttons={menuButtons}/>
+				<PlayButton onClick={play}/>
 				<div className="title">{currentWeb && currentWeb.name}</div>
 				<SegmentButton options={segmentItems} onChange={changeType} value={state.get('type')} style={{marginLeft: 'auto'}}/>
 			</header>
 			
-			<Neuron state={state} onSpaceClick={onSpaceClick} onNeuronClick={onNeuronClick} onEdgeClick={onEdgeClick} onNeuronUp={onNeuronUp}/>
+			<Neuron values={visibleValues} state={state} onSpaceClick={onSpaceClick} onNeuronClick={onNeuronClick} onEdgeClick={onEdgeClick} onNeuronUp={onNeuronUp}/>
 		</>
 	);
 }

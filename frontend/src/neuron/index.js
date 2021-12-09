@@ -6,7 +6,7 @@ import computeValues from './compute'
 import styles from './styles.module.sass'
 import { add, hypot, multiply, subtract } from 'mathjs'
 
-export default function NeuronWeb ({state, onSpaceClick, onNeuronClick, onEdgeClick, onNeuronUp}){
+export default function NeuronWeb ({values, state, onSpaceClick, onNeuronClick, onEdgeClick, onNeuronUp}){
 
 	const svgRef = useRef()
 	const [ size, setSize ] = useState([1920, 1080])
@@ -23,7 +23,7 @@ export default function NeuronWeb ({state, onSpaceClick, onNeuronClick, onEdgeCl
 		return () => window.removeEventListener("resize", resize)
 	}, [])
 
-	const values = useMemo (() => computeValues(neurons, edges, type), [ neurons, edges, type ])
+	//const values = useMemo (() => computeValues(neurons, edges, type), [ neurons, edges, type ])
 
 	const getNeuronPosition = (key) => {
 		return neurons.get(key).get('position')
@@ -70,6 +70,9 @@ export default function NeuronWeb ({state, onSpaceClick, onNeuronClick, onEdgeCl
 			return onEdgeClick(key, e, [ e.clientX-rect.x, e.clientY-rect.y ])
 		}
 
+		if(edge.get('from') === edge.get('to'))
+			return <CircleLine key={key} from={coord.from} weight={edge.get('weight')} active={active} onMouseDown={onClick}/>
+
 		return <Line key={key} {...coord} weight={edge.get('weight')} active={active} onMouseDown={onClick}/>
 	}
 
@@ -83,7 +86,7 @@ export default function NeuronWeb ({state, onSpaceClick, onNeuronClick, onEdgeCl
 }
 
 function Line ({from, to, onMouseDown, active, weight}){
-	
+
 	const vector = subtract(to, from)
 	const h = hypot(vector)
 	const vec = [vector[1] / h * 1.5 * 15, -vector[0] / h * 15]
@@ -100,6 +103,19 @@ function Line ({from, to, onMouseDown, active, weight}){
 	)
 }
 
+function CircleLine ({ from, active, weight, onMouseDown }){
+	const radius = 30
+
+	return (
+		<>
+			<circle cx={from[0]+25} cy={from[1]-25} r={radius} className={cn(styles.edge, active && styles.active)} onMouseDown={onMouseDown}/>
+			{ typeof weight === 'number' && (
+				<text x={from[0]+ 30 + radius} y={from[1] - 25 - radius} className={styles.text}>{Math.floor(weight*100)/100}</text>
+			)}
+		</>
+	)
+}
+
 function Neuron ({weight,neuron, active, onMouseDown, onMouseUp, starting, ending}){
 	const coord = { cx: neuron.get('position')[0], cy: neuron.get('position')[1] }
 
@@ -112,7 +128,7 @@ function Neuron ({weight,neuron, active, onMouseDown, onMouseUp, starting, endin
 		<>
 			<circle {...coord} r={30} onMouseUp={onMouseUp} onMouseDown={onMouseDown} className={cn(styles.neuron, activated && styles.activated, active && styles.active)}/>
 			<text {...coordText} className={styles.text}>{text}</text>
-			{weight && ( <text {...coordText} className={styles.weight}>{Math.floor(weight*100)/100}</text> )}
+			{ typeof(weight) === 'number' && ( <text {...coordText} className={styles.weight}>{Math.floor(weight*100)/100}</text> )}
 			{ neuron.has('label') && <text className={cn(styles.label, starting && styles.starting, ending && styles.ending)} {...coordText}>
 				{ neuron.get('label') }
 			</text> }

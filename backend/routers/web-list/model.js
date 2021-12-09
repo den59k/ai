@@ -5,13 +5,13 @@ module.exports = function(db){
 	const collection = db.collection('webs')
 
 	const getWebList = async () => {
-		const resp = await collection.find({}, { projection: { data: 0 } }).toArray()
+		const resp = await collection.find({}, { projection: { data: 0 }, sort: { timestep: -1 } }).toArray()
 		return resp
 	}
 
 	const getWeb = async (id) => {
 		const _id = new ObjectID(id)
-		const resp = await collection.findOne({_id})
+		const resp = await collection.findOne({ _id })
 		return resp
 	}
 
